@@ -142,7 +142,6 @@ const ProductList = ({ navigation }) => {
     }
     const loadProductlistBystoreId = async () => {
 
-
         setIsError(false);
         setIsErrorMsg('');
         const params = {
@@ -163,12 +162,9 @@ const ProductList = ({ navigation }) => {
         }
         else if (response['data'] != null) {
             const mydata = response.data['data'];
-
             if (mydata != null) {
-
                 setIstotalCount(mydata['totalCount']);
                 setIstotalPages(mydata['totalPages']);
-
                 const items = mydata['items'];
                 if (items.length > 0) {
                     setIsError(false);
@@ -227,7 +223,6 @@ const ProductList = ({ navigation }) => {
                     <Text>CHANGE REDUCER</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-
                     onPress={() => console.log('Display:- ', state)}
                     style={{ padding: 10, backgroundColor: 'red', marginVertical: 10 }}>
                     <Text>Display Reducer</Text>
@@ -265,7 +260,6 @@ const ProductList = ({ navigation }) => {
                                 const params = [{ "field": "global", "operator": 0, "value": query }]
                                 dispatch({ type: 'CHANGED', params });
                                 setIsPayloadChanged(!isPalylaod);
-
                             }, 1000),);
                         }
                         }
@@ -278,13 +272,11 @@ const ProductList = ({ navigation }) => {
                             const params = [{ "field": "", "operator": 0, "value": "" }]
                             dispatch({ type: 'CHANGED', params });
                             setIsPayloadChanged(!isPalylaod);
-
                         }
                         }>
                             <Icon name={'close-circle'} type={Icons.Ionicons} size={20} color={'#ccc'} />
                         </TouchableOpacity>
                     }
-
                 </View>
                 <View style={{ backgroundColor: '#fff', paddingTop: 5, }}>
                     <TouchableOpacity onPress={() => setIsvisible(!visible)} style={{ padding: 5, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
