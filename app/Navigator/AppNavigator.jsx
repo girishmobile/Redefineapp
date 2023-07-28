@@ -23,6 +23,7 @@ import OrderDetails from '../screens/OrderDetails';
 import ProductFilterModal from '../screens/ProductFilterModal';
 import Font from '../config/CustomFont';
 import FriendScreen from '../screens/DummyData/FriendScreen';
+import ProductList from '../screens/ProductList';
 
 
 //Navigator 
@@ -103,8 +104,8 @@ const ProductScreen = () => (
         title: '',
         headerTitle: () => <Applogo isNavigation={true} />
     }}>
-        <productStack.Screen name='Product' component={Products} options={{
-            headerRight: () => <MoreButton />
+        <productStack.Screen name='Product' component={ProductList} options={{
+            // headerRight: () => <MoreButton />
         }} />
         <productStack.Screen name='ProductDetails' component={ProductDetals} options={{
             headerTitle: () => renderTitle('Product Detail'),

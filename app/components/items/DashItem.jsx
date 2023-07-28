@@ -11,7 +11,7 @@ const DashItem = ({ item, index }) => {
         <TouchableOpacity
             key={index}
             activeOpacity={0.8}
-            style={[GlobalStyle.boardItem, { marginLeft: indexRow % 2 === 0 ? 20 : 0 }]}>
+            style={[GlobalStyle.boardItem, { marginLeft: indexRow % 2 === 0 ? 10 : 0 }]}>
             <View style={{ width: '90%', margin: 10, justifyContent: 'center', alignItems: 'center' }}>
                 <Icon style={{ marginTop: 20 }} type={item.type} name={item.icon} size={36} color={COLORS.lightText} />
                 <Text style={GlobalStyle.titleText}>{item.label}</Text>

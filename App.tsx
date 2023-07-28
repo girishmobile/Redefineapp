@@ -13,6 +13,7 @@ import { UserProvider } from './app/context/UserContext';
 import { NavigationContainer } from '@react-navigation/native';
 import SignIn from './app/screens/SignIn';
 import ChatScreen from './app/screens/ChatScreen';
+import ProductList from './app/screens/ProductList';
 
 function App(): JSX.Element {
   const [user, setcurrentUser] = useState({ email: '', token: '' })

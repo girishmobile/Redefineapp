@@ -110,17 +110,15 @@ const Dashboard = () => {
 
             <Appscreen>
                 <FlatList
-                    style={{ padding: 20 }}
-                    contentContainerStyle={{ paddingBottom: 40 }}
+                    style={{ padding: 10 }}
+                    contentContainerStyle={{ paddingBottom: 20 }}
                     data={data}
                     keyExtractor={item => item.id}
                     renderItem={({ item, index }) => <DashItem key={index} item={item} index={index} />}
                     numColumns={2}
                     showsVerticalScrollIndicator={false}
                 />
-                <TouchableOpacity onPress={openImageLibrary} >
-                    <Text style={{ padding: 10 }}>Get Image from library</Text>
-                </TouchableOpacity>
+
             </Appscreen>
         </>
 

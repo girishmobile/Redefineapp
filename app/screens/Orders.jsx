@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native'
+import { StyleSheet, Text, View, FlatList, TextInput, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Loader from '../components/global/Loader'
 import Appscreen from '../components/global/Appscreen';
@@ -9,11 +9,14 @@ import { orderApi, storeApi } from '../api';
 import OrderItem from '../components/items/OrderItem';
 import FooterLoadmore from '../components/items/FooterLoadmore';
 import MyDropdown from '../components/global/MyDropdown';
-import storage from '../auth/storage'; //local storage
 
+import storage from '../auth/storage'; //local storage
 import { COLORS } from '../constant';
 import { PAGE_SIZE } from '../constant/constan';
-import data from '../assets/data';
+import GlobalStyle from '../styles/GlobalStyle';
+import Icon, { Icons } from '../components/Icons';
+import Font from '../config/CustomFont';
+import StoreModal from './StoreModal';
 const Orders = ({ navigation }) => {
     //handler
     const [isLoader, setIsLoader] = useState(false);
@@ -24,18 +27,20 @@ const Orders = ({ navigation }) => {
     //Error
     const [errorMsg, setIsErrorMsg] = useState('');
     const [error, setIsError] = useState(false);
+    //Search Modal
+    const [visible, setIsvisible] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [storeId, setStoreId] = useState(null);
+    const [storeName, setStoreName] = useState('Select store');
+
     //data
     const [stores, setIsStores] = useState([]);
-    const [storeId, setStoreId] = useState(null);
-    const [storeName, setStoreName] = useState('');
     const [Items, setItems] = useState([]);
+
     //WEB API
     const getOrderApi = useApi(orderApi.getOrderlistBystoreId);
     const getstoreApi = useApi(storeApi.getStorelist);
 
-    const isObjectEmpty = (objectName) => {
-        return Object.keys(objectName).length === 0
-    }
 
     const loadOrderlistbystoreId = async (storeId) => {
         const params = {
@@ -160,20 +165,92 @@ const Orders = ({ navigation }) => {
             setIsStores([]);
             setStoreId(null);
             setItems([]);
+            setStoreName('Select store');
             addheaderInstorage();
         }
         return function cleanup() {
 
         }
     }, []);
+
+    //*********************************** SEARCHBAR ************************************** */
+    const handleSearch = (query) => {
+        setSearchQuery(query);
+        // const formattedQuery = query.toLowerCase();
+        // const filteredData = filter(fullData, (user) => {
+        //     return contains(user, formattedQuery);
+        // });
+        // setIsData(filteredData);
+
+    }
+    const renderSearchBar = () => {
+        return (
+            <View style={{ width: '100%', padding: 10, backgroundColor: COLORS.primary }}>
+                <View style={GlobalStyle.searchBox}>
+                    <Icon name={'search-outline'} type={Icons.Ionicons} size={20} color={'#ccc'} />
+                    <TextInput
+                        style={{
+                            paddingVertical: 0,
+                            flex: 1,
+                            color: COLORS.titleColor,
+                            fontFamily: Font.RalewayRegular,
+                            fontSize: 15,
+                            letterSpacing: 1.2
+                        }}
+                        placeholder='Search'
+                        //clearButtonMode='always'
+                        autoCapitalize='none'
+                        autoCorrect={false}
+                        value={searchQuery}
+                        onChangeText={(query) =>
+                            handleSearch(query)
+                        }
+                    />
+                    {
+                        searchQuery == '' ? null : <TouchableOpacity onPress={() => {
+                            setSearchQuery('');
+                            //setIsData(fullData);
+                        }
+                        }>
+                            <Icon name={'close-circle'} type={Icons.Ionicons} size={20} color={'#ccc'} />
+                        </TouchableOpacity>
+                    }
+                </View>
+                <View style={{ backgroundColor: '#fff', paddingTop: 5, }}>
+                    <TouchableOpacity onPress={() => setIsvisible(!visible)} style={{ padding: 5, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
+                        <Text style={[GlobalStyle.storeNameText, { flex: 1 }]}>{storeName}</Text>
+                        <Icon type={Icons.Ionicons} name={'ios-chevron-forward-sharp'} size={18} color={COLORS.lightText} />
+                    </TouchableOpacity>
+                </View>
+                {
+                    visible && stores.length > 0 &&
+                    <StoreModal
+                        stores={stores}
+                        visible={visible}
+                        onSelect={(item) => {
+                            setStoreName(item.label);
+                            setPageIndex(1);
+                            setItems([]);
+                            setStoreId(item.value);
+                            setIsvisible(false);
+                        }
+                        }
+                        selectedStore={storeName}
+                        onClose={() => setIsvisible(false)} />
+                }
+            </View>
+
+        )
+    }
     return (
         <>
             <Loader visible={isLoader} />
             <Appscreen>
+                {
+                    renderSearchBar()
+                }
                 <View style={styles.container}>
-                    <View style={{ zIndex: 1, marginLeft: 20, marginRight: 20, marginTop: 20 }}>
-                        {stores.length > 0 && <MyDropdown stores={stores} onSelecte={(storeValue) => selectedStoreValue(storeValue)} />}
-                    </View>
+
                     {error && (
                         <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
                             <Text style={styles.errorMsg}>{errorMsg}</Text>
@@ -181,7 +258,7 @@ const Orders = ({ navigation }) => {
                     )}
                     {Items.length > 0 && (
                         <FlatList
-                            style={{ padding: 20 }}
+                            style={{ padding: 10 }}
                             contentContainerStyle={{ paddingBottom: 20 }}
                             data={Items}
                             keyExtractor={(_, index) => index.toString()}

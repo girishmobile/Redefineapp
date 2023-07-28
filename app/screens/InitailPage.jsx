@@ -59,9 +59,6 @@ const InitailPage = ({ navigation }) => {
                     confirmBiometrics();
                 }
                 else if (Islogin && Isbiometric === false) {
-
-                    console.log('Islogin:-', Islogin, '= Isbiometric', Isbiometric);
-
                     navigation.navigate('Login', { 'user': user });
                 }
                 else {

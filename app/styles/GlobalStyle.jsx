@@ -70,8 +70,8 @@ export default StyleSheet.create({
         fontFamily: Font.RalewaySemiBold
     },
     boardItem: {
-        width: (width / 2) - 30,
-        marginBottom: 20,
+        width: (width / 2) - 15,
+        marginBottom: 10,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#fff',
@@ -127,5 +127,15 @@ export default StyleSheet.create({
             fontFamily: Font.RalewayRegular,
         }
     ),
+    searchBox: {
+        backgroundColor: COLORS.textBgcolor,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        borderColor: COLORS.textBgcolor,
+        borderWidth: 1,
+        borderRadius: 8,
+    },
 
 });

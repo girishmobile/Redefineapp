@@ -63,9 +63,8 @@ const StoreModal = ({ visible, stores, onClose, onSelect, selectedStore = '' }) 
                     <View style={styles.searchBox}>
                         <Icon name={'search-outline'} type={Icons.Ionicons} size={20} color={'#ccc'} />
                         <TextInput
-
                             style={{
-                                marginLeft: 5,
+                                marginLeft: 0,
                                 paddingVertical: 0,
                                 flex: 1,
                                 color: COLORS.titleColor,

@@ -1,5 +1,5 @@
 import { View, FlatList, StyleSheet, Text, TouchableOpacity, TextInput, Modal } from 'react-native'
-import React, { useCallback, useEffect, useState, useReducer, useRef } from 'react'
+import React, { useCallback, useEffect, useState, useReducer, useRef, useLayoutEffect } from 'react'
 
 import Appscreen from '../components/global/Appscreen';
 import { ProductItem } from '../components/items';
@@ -23,6 +23,12 @@ import StoreModal from './StoreModal';
 
 //import { FlashList } from '@shopify/flash-list';
 
+const initialPayload = [{
+    "field": "",
+    "operator": 0,
+    "value": ""
+}]
+
 const Products = ({ navigation }) => {
 
     //Utility
@@ -32,35 +38,38 @@ const Products = ({ navigation }) => {
     //data
     const [stores, setIsStores] = useState([]);
     const [Items, setItems] = useState([]);
-
+    const [fullData, setIsFullData] = useState([]);
     //Search Modal
     const [visible, setIsvisible] = useState(false);
     const [storeName, setIsStoreName] = useState('Select store');
     const [storeId, setStoreId] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
-
+    const [searchTimer, setSearchTimer] = useState(null);
+    const [searchLoadMore, setIsSearchLoadMore] = useState(false);
+    let searchPageIndex = 1;
     //WEB API
     const getstoreApi = useApi(storeApi.getStorelist);
     const getproductApi = useApi(productApi.getProductlistBystoreId);
     const getprodFilterApi = useApi(productApi.getProductFilter);
-
+    const productSearchApi = useApi(productApi.productSearchByStoreIdAndText);
     //Error 
     const [errorMsg, setIsErrorMsg] = useState('');
     const [error, setIsError] = useState(false);
     //Reducer 
-    const [state, dispatch] = useReducer(messengerReducer, initialState);
+    // const [state, dispatch] = useReducer(reducer, initialPayload);
+
     //Morefilter 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isFilter, setIsFilter] = useState(false);
-    const [isClear, setIsClear] = useState(false);
+
     const [filterLoadMore, setIsFilterLoadMore] = useState(false);
     const [filterCount, setIsFilterCount] = useState(0);
-    const [payload, setIsPayload] = useState([]);
+    const [payload, setIsPayload] = useState(initialPayload);
+    const [isPayload, setIsPayloadChanged] = useState(false);
 
     const loadstorelistByuserId = async () => {
         setIsError(false);
         setIsErrorMsg('');
-        console.log('loadStore');
         setIsLoader(true);
         await storage.getUser(async (user) => {
             if (user != null) {
@@ -78,7 +87,6 @@ const Products = ({ navigation }) => {
                     const storeName = mydata['data'][0].label;
                     setStoreId(storeValue);
                     setIsStoreName(storeName);
-
                     setIsStores(mydata['data']);
                 }
             }
@@ -88,7 +96,7 @@ const Products = ({ navigation }) => {
         })
     }
     const loadFilterProductlist = async (storeId) => {
-        console.log('load product');
+
         setIsFilterLoadMore(false);
         setIsError(false);
         setIsErrorMsg('');
@@ -152,22 +160,14 @@ const Products = ({ navigation }) => {
 
     }
     const loadProductlistBystoreId = async (storeId) => {
-
         setIsFilterLoadMore(false);
         setIsError(false);
         setIsErrorMsg('');
-
         const params = {
             "args": {
                 "pageIndex": pageIndex,
                 "pageSize": PAGE_SIZE,
-                "filteringOptions": [
-                    {
-                        "field": "",
-                        "operator": 0,
-                        "value": ""
-                    }
-                ]
+                "filteringOptions": payload
             },
             "storeId": storeId
         }
@@ -188,6 +188,8 @@ const Products = ({ navigation }) => {
                     setIsError(false);
                     setIsErrorMsg('');
                     setItems([...Items, ...items]);
+                    setIsFullData([...fullData, ...items]);
+
                     if (mydata['totalPages'] > pageIndex) {
                         setShowloadMore(true);
                     }
@@ -219,6 +221,47 @@ const Products = ({ navigation }) => {
             return;
         }
     }
+    const productSearchByStoreIdAndText = async (searchQuery) => {
+        setIsLoader(true);
+        setIsFilterLoadMore(false);
+        setIsError(false);
+        setIsErrorMsg('');
+        const params = {
+            "args": {
+                "pageIndex": searchPageIndex,
+                "pageSize": PAGE_SIZE,
+                "filteringOptions": [
+                    {
+                        "field": "global",
+                        "operator": 0,
+                        "value": searchQuery
+                    }
+                ]
+            },
+            "storeId": storeId
+        }
+        const response = await productSearchApi.request(params);
+        setIsLoader(false);
+        if (!response.ok) {
+            setIsError(true);
+            setIsErrorMsg('Oops, something went wrong.\nPlease try again later.');
+            return;
+        }
+        else if (response['data'] != null) {
+            const mydata = response.data['data'];
+            if (mydata != null) {
+                const items = mydata['items'];
+                setItems(items);
+            }
+            else {
+
+            }
+        }
+        else {
+
+        }
+
+    }
     const requiredHeader = async () => {
         const header = { 'header': true }
         await storage.mergeUserdata(header, (added) => {
@@ -229,14 +272,10 @@ const Products = ({ navigation }) => {
         setIsModalVisible(true);
     }
 
-
-    //***************************** useEffect hook ****************************** */
-    useEffect(() => {
+    useLayoutEffect(() => {
         navigation.setOptions({
-
             headerRight: () => (
                 <View style={{ flexDirection: 'row' }}>
-
                     <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', }} onPress={() => openMoreFilterModal()}>
                         {
                             filterCount > 0 && <View style={{ zIndex: 1, marginRight: -10, width: 20, height: 20, backgroundColor: 'rgba(99,102,241,1)', borderRadius: 10, justifyContent: 'center', alignItems: 'center', }}>
@@ -245,7 +284,6 @@ const Products = ({ navigation }) => {
                         }
                         <Icon type={Icons.Ionicons} name={'ios-options-outline'} size={30} color={filterCount > 0 ? 'rgba(99,102, 241, 1)' : COLORS.lightText} />
                     </TouchableOpacity>
-
                 </View>
             ),
         });
@@ -253,55 +291,13 @@ const Products = ({ navigation }) => {
 
         }
     }, [filterCount]);
-    useEffect(() => {
-        if (pageIndex === 1) return;
-        if (filterLoadMore) {
-            loadFilterProductlist(storeId);
-        }
-        else {
-            loadProductlistBystoreId(storeId);
-        }
-        return function cleanup() {
-        }
-    }, [pageIndex]);
-    useEffect(() => {
 
-        if (storeId != null) {
-            setIsFilterCount(0);
-            loadProductlistBystoreId(storeId);
-        }
-        return function cleanup() {
-        }
-    }, [storeId]);
+    //***************************** useEffect hook ****************************** */
     useEffect(() => {
-        if (payload.length > 0) {
-            loadFilterProductlist(storeId);
-        }
-        else {
-            if (storeId != null) {
-
-                setIsFilterCount(0);
-                loadProductlistBystoreId(storeId);
-            }
-        }
-        return function cleanup() {
-        }
-    }, [isFilter]);
-    useEffect(() => {
-        if (storeId != null) {
-            setIsFilterCount(0);
-            loadProductlistBystoreId(storeId)
-        }
-        return function cleanup() {
-        }
-    }, [isClear]);
-
-    useEffect(() => {
-
         let mounted = true
         if (mounted) {
             setItems([]);
-            setIsPayload([]);
+            setIsFullData([]);
             setPageIndex(1);
             setIsErrorMsg('');
             setIsStoreName('Select store');
@@ -314,10 +310,61 @@ const Products = ({ navigation }) => {
             requiredHeader();
         }
         return function cleanup() {
-            setStoreId(null);
             mounted = false
         }
     }, []);
+
+    useEffect(() => {
+
+        if (pageIndex === 1) return;
+        console.log('PageIndex changed');
+        loadProductlistBystoreId(storeId);
+        return function cleanup() {
+        }
+    }, [pageIndex]);
+
+    useEffect(() => {
+        if (storeId != null) {
+            setIsFilterCount(0);
+            console.log('Store Id changed');
+            loadProductlistBystoreId(storeId);
+        }
+        return function cleanup() {
+        }
+    }, [storeId]);
+    useEffect(() => {
+        console.log('IsPayload is changed', payload);
+        if (storeId != null) {
+            loadProductlistBystoreId(storeId);
+        }
+        return function cleanup() {
+        }
+    }, [isPayload]);
+
+    // useEffect(() => {
+    //     if (payload.length > 0) {
+    //         loadFilterProductlist(storeId);
+    //     }
+    //     else {
+    //         if (storeId != null) {
+
+    //             setIsFilterCount(0);
+    //             loadProductlistBystoreId(storeId);
+    //         }
+    //     }
+    //     return function cleanup() {
+    //     }
+    // }, [isFilter]);
+
+    // useEffect(() => {
+    //     console.log('clear');
+    //     if (storeId != null) {
+    //         setIsFilterCount(0);
+    //         loadProductlistBystoreId(storeId)
+    //     }
+    //     return function cleanup() {
+    //     }
+    // }, [isClear]);
     const OnloadMore = () => {
         setPageIndex(pageIndex => pageIndex + 1);
     }
@@ -333,15 +380,12 @@ const Products = ({ navigation }) => {
             </View>
         );
     }
-
-
     const renderSearchBar = () => {
         return (
             <View style={{ width: '100%', padding: 10, backgroundColor: COLORS.primary }}>
                 <View style={styles.searchBox}>
                     <Icon name={'search-outline'} type={Icons.Ionicons} size={20} color={'#ccc'} />
                     <TextInput
-
                         style={{
                             paddingVertical: 0,
                             flex: 1,
@@ -355,14 +399,26 @@ const Products = ({ navigation }) => {
                         autoCapitalize='none'
                         autoCorrect={false}
                         value={searchQuery}
-                        onChangeText={(query) =>
-                            handleSearch(query)
+                        onChangeText={(query) => {
+
+                            // handleSearch(query);
+                            if (searchTimer) {
+                                clearTimeout(searchTimer);
+                            }
+                            setSearchQuery(query);
+                            setSearchTimer(setTimeout(() => {
+                                productSearchByStoreIdAndText(query);
+                            }, 1000),);
+                        }
+
                         }
                     />
                     {
                         searchQuery == '' ? null : <TouchableOpacity onPress={() => {
                             setSearchQuery('');
                             //setIsData(fullData);
+                            setItems(fullData);
+
                         }
                         }>
                             <Icon name={'close-circle'} type={Icons.Ionicons} size={20} color={'#ccc'} />
@@ -385,6 +441,7 @@ const Products = ({ navigation }) => {
                             setIsStoreName(item.label);
                             setPageIndex(1);
                             setItems([]);
+                            setIsFullData([]);
                             setStoreId(item.value);
                             setIsvisible(false);
                         }
@@ -395,22 +452,26 @@ const Products = ({ navigation }) => {
             </View>
         )
     }
-
-    const handleSearch = (query) => {
-        setSearchQuery(query);
-        // const formattedQuery = query.toLowerCase();
-        // const filteredData = filter(fullData, (user) => {
-        //     return contains(user, formattedQuery);
-        // });
-        // setIsData(filteredData);
-
-    }
     const renderItem = useCallback((item, index) => (
         <ProductItem key={item.id} item={item} index={index}
             onPress={() => {
                 navigation.navigate('ProductDetails', { 'productId': item['id'], 'item': item })
             }} />
     ), [])
+
+    const clearFilter = () => {
+
+        setIsPayload[initialPayload];
+        setIsModalVisible(!isModalVisible);
+        setIsFilterCount(0);
+        setPageIndex(1);
+        setIsErrorMsg('');
+        setIsError(false);
+        setItems([]);
+        setIsFullData([]);
+        setIsPayloadChanged(!isPayload);
+    };
+
     return (
         <>
 
@@ -420,7 +481,6 @@ const Products = ({ navigation }) => {
                     renderSearchBar()
                 }
                 <View style={{ flex: 1, }}>
-
                     {error && (
                         <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
                             <Text style={styles.errorMsg}>{errorMsg}</Text>
@@ -471,22 +531,13 @@ const Products = ({ navigation }) => {
                         setIsErrorMsg('');
                         setIsError(false);
                         setItems([]);
+                        setIsFullData([]);
                         setIsFilterCount(params['count']);
                         setIsFilter(!isFilter);
-                    }}
-                    onClear={() => {
-                        setIsModalVisible(!isModalVisible);
-
-                        if (payload.length > 0) {
-
-                            setPageIndex(1);
-                            setIsErrorMsg('');
-                            setIsError(false);
-                            setItems([]);
-                            setIsClear(!isClear);
-                        }
+                        setIsPayloadChanged(!isPayload);
 
                     }}
+                    onClear={() => clearFilter()}
                     storeId={storeId} />
             }
         </>

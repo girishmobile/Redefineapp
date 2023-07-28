@@ -26,7 +26,6 @@ const CustomerItem = ({ item, index, onPress }) => {
         case "unRegisteredCustomer":
             iconName = "account-multiple-minus-outline";
             break;
-
         default:
             break;
     }
@@ -34,7 +33,7 @@ const CustomerItem = ({ item, index, onPress }) => {
         <TouchableOpacity
             key={index}
             activeOpacity={0.8}
-            style={[GlobalStyle.boardItem, { marginLeft: indexRow % 2 === 0 ? 20 : 0 }]}
+            style={[GlobalStyle.boardItem, { marginLeft: indexRow % 2 === 0 ? 10 : 0 }]}
             onPress={onPress}>
             <View style={{ width: '90%', margin: 10, justifyContent: 'center', alignItems: 'center' }}>
                 <Icon name={iconName} type={Icons.MaterialCommunityIcons} size={36} color={COLORS.lightText} style={{ opacity: 0.8 }} />

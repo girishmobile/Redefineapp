@@ -55,8 +55,8 @@ const Customers = ({ navigation }) => {
                 <View style={styles.container}>
 
                     <FlatList
-                        style={{ padding: 20 }}
-                        contentContainerStyle={{ paddingBottom: 40, }}
+                        style={{ padding: 10 }}
+                        contentContainerStyle={{ paddingBottom: 20, }}
                         data={mydata}
                         keyExtractor={item => item.id}
                         numColumns={2}
