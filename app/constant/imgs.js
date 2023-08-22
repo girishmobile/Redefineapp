@@ -4,4 +4,5 @@ export default {
     baseUrl: 'https://redefinecommerce.blob.core.windows.net/',
 
 
+
 }

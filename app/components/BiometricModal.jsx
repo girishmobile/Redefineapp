@@ -16,7 +16,7 @@ const BiometricModal = ({ open, onSkipped, onEnabled }) => {
                 <Card>
                     <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%' }}>
                         <Applogo />
-                        <Icon style={{ marginVertical: 10 }} name={'ios-shield-checkmark-outline'} color={COLORS.secondary} size={41} type={Icons.Ionicons} />
+                        <Icon style={{ marginVertical: 10 }} name={'shield-checkmark-outline'} color={COLORS.secondary} size={41} type={Icons.Ionicons} />
                         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', }}>
                             <Text style={[styles.text,]}>{`Do you want to allow Redefine Solutions App to use biometrics. like (FaceId or TouchID) authentication ?`}</Text>
                         </View>

@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react'
 import { COLORS, IMGS } from '../../constant'
 import FastImage from 'react-native-fast-image'
 const { width: SCREEN_WIDTH } = Dimensions.get('screen')
-const FastImageView = ({ imageUrl }) => {
+const FastImageView = ({ imageUrl, resizeMode = 'cover' }) => {
 
   const [loading, setIsLoading] = useState(false)
   let IMGURL = '';
@@ -23,7 +23,9 @@ const FastImageView = ({ imageUrl }) => {
         source={{
           uri: `${IMGS.baseUrl}${IMGURL}`,
           priority: FastImage.priority.normal,
+
         }}
+        resizeMode={resizeMode}
         onLoadStart={() => setIsLoading(true)}
         onLoadEnd={() => setIsLoading(false)}
         onError={() => setIsLoading(false)}

@@ -3,6 +3,7 @@ import React from 'react'
 import { COLORS, } from '../../constant';
 import FastImageView from '../global/FastImageView';
 import GlobalStyle from '../../styles/GlobalStyle';
+import Font from '../../config/CustomFont';
 const { width } = Dimensions.get('screen');
 const ProductItem = ({ item, index, onPress }) => {
     const indexrow = index + 1;
@@ -54,7 +55,9 @@ const styles = StyleSheet.create({
     imageContainer: {
         margin: 10,
         borderRadius: 10,
-        overflow: 'hidden'
+        overflow: 'hidden',
+
+
     },
     button: (recStatus) => (
         {
@@ -73,7 +76,7 @@ const styles = StyleSheet.create({
             textAlign: 'center',
             fontSize: 12,
             letterSpacing: 1.2,
-            fontWeight: '500'
+            fontFamily: Font.RalewaySemiBold
         }
     ),
 });

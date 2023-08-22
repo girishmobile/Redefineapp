@@ -1,21 +1,21 @@
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, FlatList, } from 'react-native'
-import React, { useEffect, useReducer, useState, useCallback, useLayoutEffect } from 'react'
-import storage from '../auth/storage';
-import { Appscreen, Loader } from '../components/global';
-
-import useApi from '../hooks/useApi';
-import { productApi, storeApi } from '../api';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, FlatList } from 'react-native'
+import React, { useLayoutEffect, useState, useEffect, useReducer } from 'react'
 import Icon, { Icons } from '../components/Icons';
 import { COLORS } from '../constant';
+import FilterIcon from '../components/global/FilterIcon';
+import { Appscreen, Loader } from '../components/global';
+import OrderFilterModal from './Model/OrderFilterModal';
 import Font from '../config/CustomFont';
 import GlobalStyle from '../styles/GlobalStyle';
+
+//WEB API
+import useApi from '../hooks/useApi';
+import { storeApi, orderApi } from '../api';
+import storage from '../auth/storage';
 import StoreModal from './StoreModal';
 import { PAGE_SIZE } from '../constant/constan';
+import OrderItem from '../components/items/OrderItem';
 import LoadMoreBtn from '../components/global/LoadMoreBtn';
-import { ProductItem } from '../components/items';
-import CustomModal from './Model/CustomModal';
-import FilterIcon from '../components/global/FilterIcon';
-
 
 const payload = [{
     "field": "",
@@ -23,7 +23,7 @@ const payload = [{
     "value": ""
 }];
 
-function reducer(state, action) {
+function reducerFun(state, action) {
     switch (action.type) {
         case 'CHANGED': {
             return action.params
@@ -35,79 +35,62 @@ function reducer(state, action) {
             break;
     }
 }
-const ProductList = ({ navigation }) => {
+const OrderList = ({ navigation }) => {
 
+    //reducer 
+    const [state, dispatch] = useReducer(reducerFun, payload);
 
-    const [state, dispatch] = useReducer(reducer, payload);
-    const params = [{ name: 'Shreyansh', age: '3' }, { name: 'Aditey', age: '1' }];
     const [isPalylaod, setIsPayloadChanged] = useState(false);
-
-    //store
-    const [storeId, setIsStoreId] = useState(null);
-    const [storeName, setIsStoreName] = useState('');
-    const [storeList, setIsStoreList] = useState([]);
-
+    //Morefilter
+    const [filterCount, setIsFilterCount] = useState(0);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
     //Search Modal
     const [visible, setIsvisible] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [searchTimer, setSearchTimer] = useState(null);
-    //Product list
-    const [ProductList, setIsProductList] = useState([]);
+    //store
+    const [storeId, setIsStoreId] = useState(null);
+    const [storeName, setIsStoreName] = useState('');
+    const [storeList, setIsStoreList] = useState([]);
+    //Order list
+    const [orderList, setIsOrderList] = useState([]);
     const [pageIndex, setIsPageIndex] = useState(1);
     const [loadmoreBtn, setIsLoadmoreBtn] = useState(false);
-
     const [totalPages, setIstotalPages] = useState(0);
     const [totalCount, setIstotalCount] = useState(0);
-    //Morefilter
-    const [filterCount, setIsFilterCount] = useState(0);
-    const [isModalVisible, setIsModalVisible] = useState(false);
+
     //Loader and Error
     const [isLoader, setIsLoader] = useState(false);
     const [errorMsg, setIsErrorMsg] = useState('');
     const [error, setIsError] = useState(false);
+
     //WEB API
     const getStorelistApi = useApi(storeApi.getStorelist);
-    const getProductlistApi = useApi(productApi.getProductlistBystoreId);
+    const getOrderApi = useApi(orderApi.getOrderlistBystoreId);
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            headerRight: () => (
-                <FilterIcon filterCount={filterCount} onPress={() => openMoreFilterModal()} />
-            ),
+            headerRight: () => (<FilterIcon filterCount={filterCount} onPress={() => openMoreFilterModal()} />),
         });
         return function cleanup() {
 
         }
     }, [filterCount]);
     useEffect(() => {
-
         getstorelistFromserver();
         return function cleanup() {
-            clearStateValue();
+            //clearStateValue();
             console.log('clean up called');
         }
     }, []);
     useEffect(() => {
         if (storeId != null) {
-            console.log('isPayload:-', state)
-            loadProductlistBystoreId();
+            loadOrderlistbystoreId();
         }
         return function cleanup() {
         }
     }, [isPalylaod]);
-    const clearStateValue = () => {
-
-        setIsPageIndex(1);
-        setIsStoreId(null);
-        setIsProductList([]);
-        setIsFilterCount(0)
-        setIsLoadmoreBtn(false);
-        setIsError(false);
-        setIsErrorMsg('');
-    };
-    const openMoreFilterModal = () => {
-        setIsModalVisible(true);
-    }
     const getstorelistFromserver = async () => {
         const header = { 'header': true }
         await storage.mergeUserdata(header, (added) => {
@@ -156,23 +139,25 @@ const ProductList = ({ navigation }) => {
         })
 
     }
-    const loadProductlistBystoreId = async () => {
+    const loadOrderlistbystoreId = async () => {
         setIsError(false);
         setIsErrorMsg('');
         const params = {
-            "args": {
+            "pageSearchArgs": {
                 "pageIndex": pageIndex,
                 "pageSize": PAGE_SIZE,
                 "filteringOptions": state
             },
-            "storeId": storeId
+            "storeID": [
+                storeId
+            ]
         }
         setIsLoader(true);
-        const response = await getProductlistApi.request(params);
+        const response = await getOrderApi.request(params);
         setIsLoader(false);
         if (!response.ok) {
             setIsError(true);
-            setIsErrorMsg('Oops, something went wrong.\nPlease try again later.');
+            setIsErrorMsg('Oops, something went wrong.\nPlease try again later');
             return;
         }
         else if (response['data'] != null) {
@@ -184,7 +169,7 @@ const ProductList = ({ navigation }) => {
                 if (items.length > 0) {
                     setIsError(false);
                     setIsErrorMsg('');
-                    setIsProductList([...ProductList, ...items]);
+                    setIsOrderList([...orderList, ...items]);
                     if (mydata['totalPages'] > pageIndex) {
                         setIsLoadmoreBtn(true);
                     }
@@ -215,35 +200,44 @@ const ProductList = ({ navigation }) => {
             setIsError(true);
             setIsErrorMsg('An unexpected error occurred.');
         }
+    }
+    const clearStateValue = () => {
+        setIsPageIndex(1);
+        setIsFilterCount(0);
+        setIsOrderList([]);
+        setIsLoadmoreBtn(false);
+        setIsStoreId(null);
+        setIsError(false);
+        setIsErrorMsg('');
+    };
+    const openMoreFilterModal = () => {
+        setIsModalVisible(!isModalVisible);
 
     }
-    const renderTopheader = () => {
-        return (
-            <View style={{ flexDirection: 'row', marginTop: 50 }}>
-                <TouchableOpacity
-                    onPress={() => {
-                        dispatch({ type: 'RESET', params: payload });
-                        setIsPayloadChanged(!isPalylaod);
-                    }
-                    }
-                    style={{ padding: 10, backgroundColor: 'orange', marginVertical: 10 }}>
-                    <Text>RESET REDUCER</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => {
-                        dispatch({ type: 'CHANGED', params });
-                        setIsPayloadChanged(!isPalylaod);
-                    }}
-                    style={{ padding: 10, backgroundColor: 'green', marginVertical: 10 }}>
-                    <Text>CHANGE REDUCER</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => console.log('Display:- ', state)}
-                    style={{ padding: 10, backgroundColor: 'red', marginVertical: 10 }}>
-                    <Text>Display Reducer</Text>
-                </TouchableOpacity>
-            </View>
-        );
+    const applyFilter = (params) => {
+
+        resetFilterField();
+        dispatch({ type: 'CHANGED', params });
+        setIsPayloadChanged(!isPalylaod);
+    }
+    const clearFilter = () => {
+
+
+        setIsFilterCount(0);
+        resetFilterField();
+        const params = [{
+            "field": "",
+            "operator": 0,
+            "value": ""
+        }]
+
+        dispatch({ type: 'CHANGED', params });
+        setIsPayloadChanged(!isPalylaod);
+    }
+    const resetFilterField = () => {
+        setIsModalVisible(!isModalVisible);
+        setIsOrderList([]);
+        setIsPageIndex(1);
     }
     const renderSearchBar = () => {
         return (
@@ -260,6 +254,7 @@ const ProductList = ({ navigation }) => {
                             letterSpacing: 1.2
                         }}
                         placeholder='Search'
+                        //clearButtonMode='always'
                         autoCapitalize='none'
                         autoCorrect={false}
                         value={searchQuery}
@@ -269,10 +264,9 @@ const ProductList = ({ navigation }) => {
                             }
                             setSearchQuery(query);
                             setSearchTimer(setTimeout(() => {
-                                setIsProductList([]);
+                                setIsOrderList([]);
                                 setIsPageIndex(1);
                                 const params = [{ "field": "global", "operator": 0, "value": query }]
-
                                 dispatch({ type: 'CHANGED', params });
                                 setIsPayloadChanged(!isPalylaod);
                             }, 1000),);
@@ -282,7 +276,7 @@ const ProductList = ({ navigation }) => {
                     {
                         searchQuery == '' ? null : <TouchableOpacity onPress={() => {
                             setSearchQuery('');
-                            setIsProductList([]);
+                            setIsOrderList([]);
                             setIsPageIndex(1);
                             const params = [{ "field": "", "operator": 0, "value": "" }]
                             dispatch({ type: 'CHANGED', params });
@@ -309,9 +303,9 @@ const ProductList = ({ navigation }) => {
                             setIsStoreName(item.label);
                             setIsStoreId(item.value);
                             setIsvisible(false);
+
                             const params = [{ "field": "", "operator": 0, "value": "" }]
                             dispatch({ type: 'CHANGED', params });
-
                             setIsPayloadChanged(!isPalylaod);
                         }
                         }
@@ -321,53 +315,30 @@ const ProductList = ({ navigation }) => {
             </View>
         )
     }
-    const clearFilter = () => {
-        setIsModalVisible(!isModalVisible);
-        setIsFilterCount(0);
-        setIsProductList([]);
-        setIsPageIndex(1);
-        const params = [{
-            "field": "",
-            "operator": 0,
-            "value": ""
-        }]
-        dispatch({ type: 'CHANGED', params });
-        setIsPayloadChanged(!isPalylaod);
-    }
-    const applyFilter = (params) => {
-        setIsModalVisible(!isModalVisible);
-        setIsProductList([]);
-        setIsPageIndex(1);
-        dispatch({ type: 'CHANGED', params });
-        setIsPayloadChanged(!isPalylaod);
-    }
-    const renderItem = useCallback((item, index) => (
-        <ProductItem key={item.id} item={item} index={index}
-            onPress={() => {
-                navigation.navigate('ProductDetails', { 'productId': item['id'], 'item': item })
-            }} />
-    ), []);
-
     return (
         <>
             <Loader visible={isLoader} />
             <Appscreen>
                 {renderSearchBar()}
-                <View style={{ flex: 1, }}>
+                <View style={{ flex: 1 }}>
                     {error && (
                         <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
                             <Text style={styles.errorMsgText}>{errorMsg}</Text>
                         </View>
                     )}
-                    {ProductList.length > 0 && (
+                    {orderList.length > 0 && (
                         <FlatList
                             style={{ padding: 10 }}
-                            nestedScrollEnabled={true}
                             contentContainerStyle={{ paddingBottom: 20 }}
-                            data={ProductList}
+                            data={orderList}
                             keyExtractor={(_, index) => index.toString()}
-                            renderItem={({ item, index }) => renderItem(item, index)}
-                            numColumns={2}
+                            renderItem={({ item, index }) => {
+                                return <OrderItem item={item} onPress={() => navigation.navigate('Orderdetails', { 'order': item })} />
+                            }}
+                            refreshing={refreshing}
+                            onRefresh={() => {
+                                console.log('onRefeshing');
+                            }}
                             showsVerticalScrollIndicator={false}
                             removeClippedSubviews={false}
                             ListFooterComponent={loadmoreBtn && <LoadMoreBtn totalPages={totalPages} pageIndex={pageIndex} OnloadMore={() => {
@@ -379,13 +350,12 @@ const ProductList = ({ navigation }) => {
                 </View>
             </Appscreen>
             {
-                storeId && <CustomModal
+                storeList.length > 0 && <OrderFilterModal
                     isVisible={isModalVisible}
                     onClose={() => setIsModalVisible(!isModalVisible)}
-
                     onApply={(params) => {
                         setIsFilterCount(params['count']);
-                        [applyFilter(params['payload'])]
+                        applyFilter(params['payload'])
                     }}
                     onClear={() => clearFilter()}
                     storeId={storeId} />
@@ -394,10 +364,17 @@ const ProductList = ({ navigation }) => {
     )
 }
 
-export default ProductList
+export default OrderList
 
 const styles = StyleSheet.create({
-    //Search
+    textInput: {
+        paddingVertical: 0,
+        flex: 1,
+        color: COLORS.titleColor,
+        fontFamily: Font.RalewayRegular,
+        fontSize: 15,
+        letterSpacing: 1.2
+    },
     errorMsgText: {
         color: COLORS.titleColor,
         opacity: 0.7,
@@ -408,5 +385,4 @@ const styles = StyleSheet.create({
         textAlign: 'center',
 
     },
-
 })

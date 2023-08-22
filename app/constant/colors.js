@@ -11,6 +11,8 @@ export default {
     shadowColor: "#161345",
     blueText: "#6366F1",
     lightGrey: '#D3D3D3',
+    green: 'rgba(22, 163, 74,1)',
+
     //#F6F7FB
 
 }

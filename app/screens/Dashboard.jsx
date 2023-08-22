@@ -16,17 +16,18 @@ import UserContext from '../context/UserContext';
 import { launchImageLibrary } from 'react-native-image-picker';
 
 const data = [
-    { id: 1, label: 'Board', type: Icons.Ionicons, icon: 'ios-speedometer-outline', },
-    { id: 2, label: 'Customers', type: Icons.Ionicons, icon: 'ios-people-outline', },
-    { id: 3, label: 'Orders', type: Icons.Ionicons, icon: 'ios-basket-outline', },
-    { id: 4, label: 'Product', type: Icons.Ionicons, icon: 'ios-grid-outline', },
-    { id: 5, label: 'Settings', type: Icons.Ionicons, icon: 'ios-settings-outline', },
+    { id: 1, label: 'Master Product Feed', type: Icons.Ionicons, icon: 'grid-outline', sublabel: 'PRODUCT MANAGEMENT' },
+    { id: 2, label: 'Content Management', type: Icons.Ionicons, icon: 'people-outline', sublabel: 'CONTENT MANAGEMENT' },
+    { id: 3, label: 'Stores', type: Icons.Ionicons, icon: 'storefront-outline', sublabel: 'STORES MANAGEMENT' },
+    { id: 4, label: 'Promotions', type: Icons.MaterialCommunityIcons, icon: 'tag-outline', sublabel: 'PROMOTIONS MANAGEMENT' },
+    { id: 5, label: 'Settings', type: Icons.Ionicons, icon: 'settings-outline', sublabel: 'Product Management' },
 ];
-const Dashboard = () => {
+const Dashboard = ({ navigation }) => {
 
     const [isLoader, setIsLoader] = useState(false);
     const { currentuser, setcurrentUser } = useContext(UserContext);
     const getUserApi = useApi(authApi.getUserdata);
+    const [isSuperUser, setIsSuperUser] = useState(false);
 
     const loadUserprofile = async () => {
         setIsLoader(true);
@@ -34,7 +35,7 @@ const Dashboard = () => {
             if (user != null) {
                 const { userId } = user;
                 const result = await getUserApi.request(userId);
-                setIsLoader(getUserApi.isLoader);
+                setIsLoader(false);
                 if (result['data'] != null) {
                     const userdata = result['data']['data'];
 
@@ -44,6 +45,9 @@ const Dashboard = () => {
                             const SuperUser = { "isSuperUser": isSuperUser }
                             await storage.mergeUserdata(SuperUser, async (result) => {
 
+                                if (isSuperUser === true) {
+                                    setIsSuperUser(isSuperUser);
+                                }
                             });
                         }
                     }
@@ -68,13 +72,8 @@ const Dashboard = () => {
             }
         });
     }
-
-
-
     useEffect(() => {
         loadUserprofile();
-
-
     }, []);
     //IMAGE 
     let options = {
@@ -104,20 +103,40 @@ const Dashboard = () => {
             console.warn('error', error);
         }
     }
+    const OndashboardItem = (index) => {
+
+        switch (index) {
+            case 0:
+                navigation.navigate('MasterProductFeed');
+                break;
+            case 2: {
+                navigation.navigate('MasterStore');
+                break;
+            }
+            case 3: {
+                navigation.navigate('MasterPromotions');
+                break;
+            }
+            default:
+                break;
+        }
+    }
     return (
         <>
             <Loader visible={isLoader} />
 
             <Appscreen>
-                <FlatList
-                    style={{ padding: 10 }}
-                    contentContainerStyle={{ paddingBottom: 20 }}
-                    data={data}
-                    keyExtractor={item => item.id}
-                    renderItem={({ item, index }) => <DashItem key={index} item={item} index={index} />}
-                    numColumns={2}
-                    showsVerticalScrollIndicator={false}
-                />
+                {
+                    isSuperUser && <FlatList
+                        style={{ padding: 10 }}
+                        contentContainerStyle={{ paddingBottom: 20 }}
+                        data={data}
+                        keyExtractor={item => item.id}
+                        renderItem={({ item, index }) => <DashItem key={index} item={item} index={index} onPress={() => OndashboardItem(index)} />}
+                        numColumns={2}
+                        showsVerticalScrollIndicator={false}
+                    />
+                }
 
             </Appscreen>
         </>

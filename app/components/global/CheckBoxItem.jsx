@@ -8,7 +8,7 @@ const CheckBoxItem = ({ isselected, title, onPress }) => {
     return (
         <View style={{ marginLeft: 10, marginRight: 10, }}>
             <TouchableOpacity style={styles.checkboxWrapper} onPress={onPress}>
-                <Icon type={Icons.Ionicons} name={isselected ? 'ios-checkbox' : 'ios-square-outline'} size={20} color={isselected ? 'rgba(99,102, 241, 1)' : COLORS.lightGrey} />
+                <Icon type={Icons.Ionicons} name={isselected ? 'checkbox' : 'square-outline'} size={20} color={isselected ? 'rgba(99,102, 241, 1)' : COLORS.lightGrey} />
                 <Text style={[styles.titleText, { marginLeft: 5, flex: 1 }]}>{title}</Text>
             </TouchableOpacity>
         </View>

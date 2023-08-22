@@ -3,16 +3,13 @@ import Font from "../config/CustomFont";
 import { COLORS } from "../constant";
 
 const { height, width } = Dimensions.get('screen');
-
-
 export default StyleSheet.create({
-
     titleText:
     {
         fontFamily: Font.RalewayBold,
         color: COLORS.secondary,
         opacity: 0.9,
-        fontSize: 17,
+        fontSize: 16,
         letterSpacing: 1.2,
         marginVertical: 10,
         textAlign: 'center',
@@ -23,7 +20,7 @@ export default StyleSheet.create({
         fontFamily: Font.RalewaySemiBold,
         color: COLORS.titleColor,
         opacity: 0.9,
-        fontSize: 15,
+        fontSize: 14,
         letterSpacing: 1.2,
         marginVertical: 5,
         textAlign: 'left',
@@ -40,6 +37,7 @@ export default StyleSheet.create({
         textTransform: 'capitalize',
         fontFamily: Font.RalewayBold,
         width: '90%',
+
     },
     brandText: {
         color: COLORS.titleColor,
@@ -52,7 +50,7 @@ export default StyleSheet.create({
         fontFamily: Font.RalewaySemiBold
     },
     lightText: {
-        fontSize: 14,
+        fontSize: 13,
         opacity: 0.7,
         lineHeight: 18,
         letterSpacing: 1.2,
@@ -113,7 +111,6 @@ export default StyleSheet.create({
             padding: 7,
             margin: 10,
             borderRadius: 4,
-            width: '80%',
             borderColor: recStatus === 'A' ? 'rgba(134,239 , 172,1)' : recStatus === 'I' ? 'rgba(228, 83, 122, 1)' : 'rgba(241, 245, 249, 1)', //71-85-105
             borderWidth: 0.6,
         }
@@ -124,7 +121,7 @@ export default StyleSheet.create({
             textAlign: 'center',
             fontSize: 13,
             letterSpacing: 1.2,
-            fontFamily: Font.RalewayRegular,
+            fontFamily: Font.RalewaySemiBold,
         }
     ),
     searchBox: {
@@ -136,6 +133,16 @@ export default StyleSheet.create({
         borderColor: COLORS.textBgcolor,
         borderWidth: 1,
         borderRadius: 8,
+    },
+    errorTextMsg: {
+        color: COLORS.titleColor,
+        opacity: 0.7,
+        fontFamily: Font.RalewaySemiBold,
+        letterSpacing: 1.2,
+        fontSize: 13,
+        padding: 5,
+        textAlign: 'center',
+
     },
 
 });

@@ -6,12 +6,9 @@ import Font from '../../config/CustomFont'
 
 const RadioButton = ({ data, onSelected, onClear, isSelected = '' }) => {
     const [userOption, setUserOption] = useState(isSelected);
-
     const onSelectedStatus = (recStatus) => {
         setUserOption(recStatus);
-
         onSelected(recStatus);
-
     }
     const onClearStatus = () => {
         setUserOption('');
@@ -27,7 +24,7 @@ const RadioButton = ({ data, onSelected, onClear, isSelected = '' }) => {
                     data.map((item, index) => {
                         return <View key={index.toString()} style={{ flexDirection: 'row', marginVertical: 5 }}>
                             <TouchableOpacity onPress={() => onSelectedStatus(item.label)}>
-                                <Icon type={Icons.Ionicons} name={item.label === userOption ? 'ios-radio-button-on-outline' : 'ios-radio-button-off-outline'} size={22} color={item.label === userOption ? 'rgba(99,102, 241, 1)' : COLORS.lightText} />
+                                <Icon type={Icons.MaterialIcons} name={item.label === userOption ? 'radio-button-on' : 'radio-button-off'} size={20} color={item.label === userOption ? 'rgba(99,102, 241, 1)' : COLORS.lightText} />
                             </TouchableOpacity>
                             <Text style={[styles.titleText, { alignSelf: 'center' }]}>{item.label}</Text>
                         </View>
@@ -62,7 +59,6 @@ const styles = StyleSheet.create({
         letterSpacing: 1.2,
     },
     clearBtn: {
-
         width: 70,
         padding: 10,
         justifyContent: 'center',

@@ -16,7 +16,9 @@ import ChatScreen from './app/screens/ChatScreen';
 import ProductList from './app/screens/ProductList';
 
 function App(): JSX.Element {
+  let x = 1;
   const [user, setcurrentUser] = useState({ email: '', token: '' })
+  console.log('x value =', x);
   return (
     <UserProvider value={{ user, setcurrentUser }}>
       <NavigationContainer>

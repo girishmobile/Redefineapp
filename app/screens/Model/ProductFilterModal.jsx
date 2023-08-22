@@ -1,14 +1,14 @@
 import { Modal, StyleSheet, Text, View, TouchableOpacity, ScrollView, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import Icon, { Icons } from '../components/Icons';
-import { COLORS } from '../constant';
-import Font from '../config/CustomFont';
-import { Appscreen, Loader } from '../components/global';
-import CheckBoxItem from '../components/global/CheckBoxItem';
-import RadioButton from '../components/global/RadioButton';
+import Icon, { Icons } from '../../components/Icons';
+import { COLORS } from '../../constant';
+import Font from '../../config/CustomFont';
+import { Appscreen, Loader } from '../../components/global';
+import CheckBoxItem from '../../components/global/CheckBoxItem';
+import RadioButton from '../../components/global/RadioButton';
 //WEB API
-import useApi from '../hooks/useApi';
-import { productApi } from '../api';
+import useApi from '../../hooks/useApi';
+import { productApi } from '../../api';
 
 const data = [
     { id: 1, label: 'Board', isSelected: false },
@@ -16,19 +16,15 @@ const data = [
     { id: 3, label: 'Orders', isSelected: false },
     { id: 4, label: 'Product', isSelected: false },
     { id: 5, label: 'Settings', isSelected: false },
-
 ];
-
 const statusData = [
     { id: 1, label: 'Active', isSelected: false },
     { id: 2, label: 'Inactive', isSelected: false },
     { id: 3, label: 'Draft', isSelected: false }
 ]
-
 const ProductFilterModal = ({ isVisible, navigation, route }) => {
 
     const { storeId } = route.params;
-
     const [openBrand, setIsOpenBrand] = useState(false);
     const [openCategory, setIsOpenCategory] = useState(false);
     const [openprodType, setIsOpenprodType] = useState(false);
@@ -38,16 +34,11 @@ const ProductFilterModal = ({ isVisible, navigation, route }) => {
     const [dataState, setIsDataState] = useState(data);
     //Loader
     const [isLoader, setIsLoader] = useState(false);
-
-
     //data 
     const [Brand, setIsBrand] = useState(null);
     const [Category, setIsCategory] = useState(null);
-
     //API
     const getDropdownApi = useApi(productApi.getDropdowntable);
-
-
     const renderTitle = (title) => (
         <Text style={{ fontFamily: Font.RalewaySemiBold, fontSize: 16, letterSpacing: 1.2, color: COLORS.lightText, }}>{title}</Text>
     )
@@ -57,12 +48,11 @@ const ProductFilterModal = ({ isVisible, navigation, route }) => {
             headerTitle: () => renderTitle('More Filters'),
             headerRight: () => (
                 <TouchableOpacity style={{ flexDirection: 'column' }} onPress={() => navigation.goBack()}>
-                    <Icon type={Icons.Ionicons} name={'ios-close-outline'} size={30} color={COLORS.lightText} />
+                    <Icon type={Icons.Ionicons} name={'close-outline'} size={30} color={COLORS.lightText} />
                 </TouchableOpacity>
             ),
         })
-    }, [navigation])
-
+    }, [navigation]);
     const getBrandList = async () => {
         setIsOpenBrand(!openBrand);
         if (!openBrand) {
@@ -113,7 +103,7 @@ const ProductFilterModal = ({ isVisible, navigation, route }) => {
         <View style={styles.rowContainer}>
             <TouchableOpacity onPress={() => getBrandList()} style={styles.touchContainer}>
                 <Text style={styles.titleText}>Brand</Text>
-                <Icon type={Icons.Ionicons} name={openBrand ? 'ios-chevron-down-outline' : 'ios-chevron-forward-sharp'} size={22} color={COLORS.lightText} />
+                <Icon type={Icons.Ionicons} name={openBrand ? 'chevron-down-outline' : 'chevron-forward-sharp'} size={22} color={COLORS.lightText} />
             </TouchableOpacity>
             {openBrand &&
                 <>
@@ -147,7 +137,7 @@ const ProductFilterModal = ({ isVisible, navigation, route }) => {
         <View style={styles.rowContainer}>
             <TouchableOpacity onPress={() => getCategorylist()} style={styles.touchContainer}>
                 <Text style={styles.titleText}>Category</Text>
-                <Icon type={Icons.Ionicons} name={openCategory ? 'ios-chevron-down-outline' : 'ios-chevron-forward-sharp'} size={22} color={COLORS.lightText} />
+                <Icon type={Icons.Ionicons} name={openCategory ? 'chevron-down-outline' : 'chevron-forward-sharp'} size={22} color={COLORS.lightText} />
             </TouchableOpacity>
             {openCategory && <>
                 <Drawline />
@@ -157,7 +147,6 @@ const ProductFilterModal = ({ isVisible, navigation, route }) => {
                         data={Category}
                         keyExtractor={(_, index) => index.toString()}
                         renderItem={({ item, index }) => <CheckBoxItem title={item.label} isselected={item.isSelected} onPress={() => {
-
                             item.isSelected = !item.isSelected;
                             setIsDataState({
                                 ...dataState,
@@ -173,7 +162,7 @@ const ProductFilterModal = ({ isVisible, navigation, route }) => {
         <View style={styles.rowContainer}>
             <TouchableOpacity onPress={() => setIsOpenprodType(!openprodType)} style={styles.touchContainer}>
                 <Text style={styles.titleText}>Product Type</Text>
-                <Icon type={Icons.Ionicons} name={openprodType ? 'ios-chevron-down-outline' : 'ios-chevron-forward-sharp'} size={22} color={COLORS.lightText} />
+                <Icon type={Icons.Ionicons} name={openprodType ? 'chevron-down-outline' : 'chevron-forward-sharp'} size={22} color={COLORS.lightText} />
             </TouchableOpacity>
             {openprodType && <>
                 <Drawline />
@@ -183,7 +172,6 @@ const ProductFilterModal = ({ isVisible, navigation, route }) => {
                         data={data}
                         keyExtractor={(_, index) => index.toString()}
                         renderItem={({ item, index }) => <CheckBoxItem title={item.label} isselected={item.isSelected} onPress={() => {
-
                             item.isSelected = !item.isSelected;
                             setIsDataState({
                                 ...dataState,
@@ -199,7 +187,7 @@ const ProductFilterModal = ({ isVisible, navigation, route }) => {
         <View style={styles.rowContainer}>
             <TouchableOpacity onPress={() => setIsOpenCreatedBy(!openCreatedBy)} style={styles.touchContainer}>
                 <Text style={styles.titleText}>Created By</Text>
-                <Icon type={Icons.Ionicons} name={openCreatedBy ? 'ios-chevron-down-outline' : 'ios-chevron-forward-sharp'} size={22} color={COLORS.lightText} />
+                <Icon type={Icons.Ionicons} name={openCreatedBy ? 'chevron-down-outline' : 'chevron-forward-sharp'} size={22} color={COLORS.lightText} />
             </TouchableOpacity>
             {openCreatedBy && <>
                 <Drawline />
@@ -225,7 +213,7 @@ const ProductFilterModal = ({ isVisible, navigation, route }) => {
         <View style={styles.rowContainer}>
             <TouchableOpacity onPress={() => setIsOpenopenUpdatedBy(!openUpdatedBy)} style={styles.touchContainer}>
                 <Text style={styles.titleText}>Updated By</Text>
-                <Icon type={Icons.Ionicons} name={openUpdatedBy ? 'ios-chevron-down-outline' : 'ios-chevron-forward-sharp'} size={22} color={COLORS.lightText} />
+                <Icon type={Icons.Ionicons} name={openUpdatedBy ? 'chevron-down-outline' : 'chevron-forward-sharp'} size={22} color={COLORS.lightText} />
             </TouchableOpacity>
             {openUpdatedBy && <>
                 <Drawline />
@@ -251,7 +239,7 @@ const ProductFilterModal = ({ isVisible, navigation, route }) => {
         <View style={styles.rowContainer}>
             <TouchableOpacity onPress={() => setIsOpenStatus(!openStatus)} style={styles.touchContainer}>
                 <Text style={styles.titleText}>Status</Text>
-                <Icon type={Icons.Ionicons} name={openStatus ? 'ios-chevron-down-outline' : 'ios-chevron-forward-sharp'} size={22} color={COLORS.lightText} />
+                <Icon type={Icons.Ionicons} name={openStatus ? 'chevron-down-outline' : 'chevron-forward-sharp'} size={22} color={COLORS.lightText} />
             </TouchableOpacity>
             {openStatus && <>
                 <Drawline />
@@ -288,7 +276,6 @@ const ProductFilterModal = ({ isVisible, navigation, route }) => {
     }
     return (
         // <Appscreen>
-
         //     <ScrollView style={styles.modalContainer}>
         //         <View style={{ flex: 1, margin: 20, }}>
         //             {renderBrand()}
@@ -299,8 +286,6 @@ const ProductFilterModal = ({ isVisible, navigation, route }) => {
         //             {renderStatus()}
         //         </View>
         //     </ScrollView >
-
-
         // </Appscreen>
         <Modal animationType='fade' transparent={true} >
 

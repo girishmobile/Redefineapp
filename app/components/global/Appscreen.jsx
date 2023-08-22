@@ -6,7 +6,6 @@ import FastImageView from './FastImageView'
 const Appscreen = ({ children }) => {
 
     return (
-
         <ImageBackground source={IMGS.bg} style={{ width: '100%', height: '100%' }}>
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={{ flex: 1, }}>

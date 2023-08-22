@@ -2,15 +2,15 @@ import { StyleSheet, Text, View, Modal, TouchableOpacity, ScrollView, FlatList, 
 import React, { useEffect, useState } from 'react'
 import { useHeaderHeight } from '@react-navigation/elements';
 
-import Icon, { Icons } from '../components/Icons'
-import Font from '../config/CustomFont';
-import { COLORS } from '../constant';
-import CheckBoxItem from '../components/global/CheckBoxItem';
+import Icon, { Icons } from '../../components/Icons'
+import Font from '../../config/CustomFont';
+import { COLORS } from '../../constant';
+import CheckBoxItem from '../../components/global/CheckBoxItem';
 //WEB API
-import useApi from '../hooks/useApi';
-import { productApi } from '../api';
-import { Loader } from '../components/global';
-import RadioButton from '../components/global/RadioButton';
+import useApi from '../../hooks/useApi';
+import { productApi } from '../../api';
+import { Loader } from '../../components/global';
+import RadioButton from '../../components/global/RadioButton';
 
 const statusData = [
     { id: 1, label: 'Active', isSelected: false },
@@ -104,9 +104,7 @@ const CustomModal = ({ isVisible, onClose, storeId, onApply, onClear }) => {
         setIsCategory(values);
     }
     const onSelectedStatus = (recValue) => {
-
         setIsRecStatusValue(recValue);
-
         let recText = '';
         switch (recValue) {
             case "Active":
@@ -122,15 +120,13 @@ const CustomModal = ({ isVisible, onClose, storeId, onApply, onClear }) => {
                 break;
         }
         setIsRecStatus(recText);
-
-
     }
     const renderBrand = () => {
         return (
             <View style={styles.rowContainer}>
                 <TouchableOpacity onPress={() => getBrandList()} style={styles.touchContainer}>
                     <Text style={styles.titleText}>Brand</Text>
-                    <Icon type={Icons.Ionicons} name={openBrand ? 'ios-chevron-down-outline' : 'ios-chevron-forward-sharp'} size={22} color={COLORS.lightText} />
+                    <Icon type={Icons.Ionicons} name={openBrand ? 'chevron-down-outline' : 'chevron-forward-sharp'} size={22} color={COLORS.lightText} style={{ opacity: 0.5 }} />
                 </TouchableOpacity>
                 {openBrand &&
                     <>
@@ -159,7 +155,7 @@ const CustomModal = ({ isVisible, onClose, storeId, onApply, onClear }) => {
             <View style={styles.rowContainer}>
                 <TouchableOpacity onPress={() => getCategoryList()} style={styles.touchContainer}>
                     <Text style={styles.titleText}>Category</Text>
-                    <Icon type={Icons.Ionicons} name={openCategory ? 'ios-chevron-down-outline' : 'ios-chevron-forward-sharp'} size={22} color={COLORS.lightText} />
+                    <Icon type={Icons.Ionicons} name={openCategory ? 'chevron-down-outline' : 'chevron-forward-sharp'} size={22} color={COLORS.lightText} style={{ opacity: 0.5 }} />
                 </TouchableOpacity>
                 {openCategory &&
                     <>
@@ -184,7 +180,7 @@ const CustomModal = ({ isVisible, onClose, storeId, onApply, onClear }) => {
         <View style={styles.rowContainer}>
             <TouchableOpacity onPress={() => setIsOpenStatus(!openStatus)} style={styles.touchContainer}>
                 <Text style={styles.titleText}>Status</Text>
-                <Icon type={Icons.Ionicons} name={openStatus ? 'ios-chevron-down-outline' : 'ios-chevron-forward-sharp'} size={22} color={COLORS.lightText} />
+                <Icon type={Icons.Ionicons} name={openStatus ? 'chevron-down-outline' : 'chevron-forward-sharp'} size={22} color={COLORS.lightText} style={{ opacity: 0.5 }} />
             </TouchableOpacity>
             {openStatus && <>
                 <Drawline />
@@ -236,7 +232,6 @@ const CustomModal = ({ isVisible, onClose, storeId, onApply, onClear }) => {
                     "value": categoryValues
                 })
             }
-
         }
         if (recStatus != '') {
 
@@ -307,11 +302,8 @@ const CustomModal = ({ isVisible, onClose, storeId, onApply, onClear }) => {
         return filterPayload;
     }
     const clearStatus = () => {
-
         setIsRecStatus('');
         setIsRecStatusValue('');
-        const fpayload = generateFilterPayload();
-
     }
     const clearFilter = () => {
         setIsBrand(null);
@@ -353,12 +345,13 @@ const CustomModal = ({ isVisible, onClose, storeId, onApply, onClear }) => {
     return (
         <Modal animationType='fade' transparent={true} visible={isVisible} onRequestClose={onClose}>
             <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', }}>
+                <TouchableOpacity activeOpacity={0.8} onPress={() => onClose()} style={{ width: '100%', height: '100%', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.1)', }} />
                 <View style={{ height: '100%', width: '70%', backgroundColor: '#fff', alignSelf: 'flex-end', }}>
                     <View style={{ height: headerHeight, justifyContent: 'flex-end' }}>
                         <View style={{ height: 44, paddingLeft: 20, paddingRight: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Text style={{ flex: 1, textAlign: 'center', fontFamily: Font.RalewaySemiBold, fontSize: 16, letterSpacing: 1.2, color: COLORS.lightText, }}>{'More Filter'}</Text>
                             <TouchableOpacity onPress={() => closeModal()}>
-                                <Icon type={Icons.Ionicons} name={'ios-close-outline'} size={30} color={COLORS.lightText} />
+                                <Icon type={Icons.Ionicons} name={'close-outline'} size={30} color={COLORS.lightText} />
                             </TouchableOpacity>
                         </View>
                     </View>

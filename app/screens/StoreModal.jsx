@@ -6,8 +6,6 @@ import Font from '../config/CustomFont'
 import { useHeaderHeight } from '@react-navigation/elements';
 import filter from 'lodash.filter';
 
-
-
 const StoreModal = ({ visible, stores, onClose, onSelect, selectedStore = '' }) => {
     const headerHeight = useHeaderHeight();
     const [searchQuery, setSearchQuery] = useState("");
@@ -44,7 +42,6 @@ const StoreModal = ({ visible, stores, onClose, onSelect, selectedStore = '' }) 
         if (value.includes(query)) {
             return true
         }
-
         return false
     }
     return (
@@ -54,7 +51,7 @@ const StoreModal = ({ visible, stores, onClose, onSelect, selectedStore = '' }) 
                     <View style={{ height: 44, paddingLeft: 20, paddingRight: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Text style={{ flex: 1, textAlign: 'center', fontFamily: Font.RalewaySemiBold, fontSize: 16, letterSpacing: 1.2, color: COLORS.lightText, }}>{'Store List'}</Text>
                         <TouchableOpacity onPress={() => closeModal()}>
-                            <Icon type={Icons.Ionicons} name={'ios-close-outline'} size={30} color={COLORS.lightText} />
+                            <Icon type={Icons.Ionicons} name={'close-outline'} size={30} color={COLORS.lightText} />
                         </TouchableOpacity>
                     </View>
                 </View>

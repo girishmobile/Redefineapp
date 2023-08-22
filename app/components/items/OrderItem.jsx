@@ -3,6 +3,12 @@ import React from 'react'
 import { COLORS, IMGS } from '../../constant';
 import Icon, { Icons } from '../Icons';
 import FastImage from 'react-native-fast-image';
+import Font from '../../config/CustomFont';
+import GlobalStyle from '../../styles/GlobalStyle';
+import order from '../../api/order';
+
+import moment from 'moment';
+
 
 const SPACING = 10;
 const AVATAR_SIZE = 70;
@@ -23,7 +29,16 @@ const OrderItem = ({ item, index, onPress }) => {
             imgUrl = imgUrl.replace(fchar, '');
         }
     }
+    const getOrderDate = (orderDate) => {
 
+        if (orderDate != null || orderDate !== '') {
+
+            return moment(orderDate).format('MM/DD/YYYY');
+        }
+        else {
+            return ''
+        }
+    }
     return (
         <TouchableOpacity
             activeOpacity={0.8}
@@ -31,17 +46,24 @@ const OrderItem = ({ item, index, onPress }) => {
             <View style={styles.row}>
                 <View style={{ alignSelf: 'center', flexDirection: 'row', alignItems: 'center' }}>
                     <View style={{ flex: 1, }}>
-                        <Text style={[styles.nameText, { flex: 1 }]}>{`Name:- ${item['customerName']}`}</Text>
-                        <Text style={styles.nameText}>{`Order Number:-  #${item['orderNumber']}`}</Text>
-                        <Text style={styles.nameText}>{`Order Total:-  $${item['orderTotal']}`}</Text>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 6 }}>
-                            <Text style={[styles.storeText, { marginRight: 7 }]}>{`Order Status:-`}</Text>
+                        <Text style={[styles.nameText, { flex: 1, fontSize: 15 }]}>{`${item['customerName']}`}</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 6, justifyContent: 'space-between' }}>
+                            <Text style={[styles.nameText, { opacity: 0.7 }]}>{`Order:-  #${item['orderNumber']}`}</Text>
+                            <Text style={[GlobalStyle.lightText, { fontSize: 12 }]}>{getOrderDate(item['orderDate'])}</Text>
+                        </View>
+                        <Text style={[styles.nameText, { opacity: 0.7 }]}>{`Total:-  $${item['orderTotal']}`}</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 6, justifyContent: 'space-between' }}>
+                            <View>
+                                <Text style={[GlobalStyle.subtitleText, { fontSize: 12, textAlign: 'right', color: 'rgba(94, 162, 81,1)', opacity: 1.0, textTransform: 'uppercase' }]} >{`${item['paymentStatus']}`}</Text>
+                            </View>
                             <View style={styles.orderStatus(orderStatus)}>
                                 <Text style={styles.statusText(orderStatus)}>{orderStatus}</Text>
                             </View>
                         </View>
                     </View>
-                    <Icon name={'ios-chevron-forward-outline'} type={Icons.Ionicons} size={24} color={COLORS.lightText} />
+                    <View style={{ marginLeft: 5 }}>
+                        <Icon name={'chevron-forward-outline'} type={Icons.Ionicons} size={16} color={COLORS.lightText} />
+                    </View>
                 </View>
             </View>
         </TouchableOpacity>
@@ -83,21 +105,20 @@ const styles = StyleSheet.create({
     },
     nameText: {
         color: COLORS.titleColor,
-        fontWeight: '600',
         opacity: 0.8,
+        fontFamily: Font.RalewayBold,
         letterSpacing: 1.2,
-        fontSize: 14,
-        marginBottom: 7,
+        fontSize: 15,
         textTransform: 'capitalize',
 
     },
     statusText: (status) => (
         {
-            fontSize: 12,
+            fontSize: 11,
             opacity: 0.8,
-            fontWeight: '500',
             color: COLORS.titleColor,
             letterSpacing: 1.1,
+            fontFamily: Font.RalewaySemiBold,
             textTransform: 'uppercase',
             color: status === 'new' ? 'rgba(2, 132,199,1)' : status === 'pending' ? 'rgba(202,138,4,1)' : status === 'shipped' ? 'rgba(22, 163, 74,1)' : status === 'cancelled' ? 'rgba(198,36 ,40,1)' : 'rgba(87, 82, 80, 1)',
 
@@ -109,8 +130,8 @@ const styles = StyleSheet.create({
         // padding: 5,
         paddingBottom: 5,
         paddingTop: 5,
-        paddingRight: 20,
-        paddingLeft: 20,
+        paddingRight: 15,
+        paddingLeft: 15,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 4,

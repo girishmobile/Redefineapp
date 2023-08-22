@@ -1,6 +1,5 @@
 import apiClient from "./client";
 
-const endpoint = '/StoreProduct/list.json';
 
 const getProductlistBystoreId = (params) => apiClient.post("/StoreProduct/listwithoutsubrows.json", params);
 const getProductDetailById = (productId) => apiClient.post(`/StoreProduct/getbyid/${productId}.json`, productId);

@@ -5,7 +5,6 @@ import { COLORS } from '../../constant'
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('screen');
 
-
 const ProductImages = ({ item }) => {
     return (
         <View style={styles.container}>
@@ -13,7 +12,6 @@ const ProductImages = ({ item }) => {
         </View>
     )
 }
-
 export default ProductImages
 
 const styles = StyleSheet.create({

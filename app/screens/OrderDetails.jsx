@@ -15,14 +15,11 @@ import colors from '../constant/colors';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('screen');
 
-
 const OrderDetails = ({ route }) => {
     const { order } = route.params;
     const [isLoader, setIsLoader] = useState(false);
     const [orderDetail, setOrderDetails] = useState(null);
-
     const [cartItem, setCartItems] = useState(null);
-
     const orderdetailApi = useApi(orderApi.getOrderdetailsById);
     const orderShoppingcartApi = useApi(orderApi.getOrderShoppingCart);
 
@@ -52,7 +49,6 @@ const OrderDetails = ({ route }) => {
         }
     }
     const getOrderdetailsById = async () => {
-
         const storeId = order['storeId'];
         const orderId = order['id'];
         const params = {
@@ -74,7 +70,6 @@ const OrderDetails = ({ route }) => {
                 }
                 setOrderDetails(mydata['data']);
                 getOrderedShoppingCartdetail();
-
             }
         }
     }
@@ -82,9 +77,7 @@ const OrderDetails = ({ route }) => {
         return Object.keys(objectName).length === 0
     }
     const getOrderDate = () => {
-
         if (orderDetail['orderDate'] != null) {
-
             return moment(orderDetail['orderDate']).format('MM/DD/YYYY hh:mm A');
         }
         else {
@@ -95,7 +88,6 @@ const OrderDetails = ({ route }) => {
         if (order != null) {
             getOrderdetailsById();
         }
-
     }, []);
     const orderDetailHeader = () => {
         let orderStatus = '';
@@ -106,7 +98,7 @@ const OrderDetails = ({ route }) => {
         return (
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', }}>
                 <View style={{ width: '50%', }}>
-                    <Text style={[styles.subtitleText,]}>Order Status</Text>
+                    <Text style={[GlobalStyle.subtitleText,]}>Order Status</Text>
                 </View>
                 <View style={{ width: '50%', alignItems: 'flex-end' }}>
                     <View style={styles.orderStatus(orderStatus)}>
@@ -136,14 +128,12 @@ const OrderDetails = ({ route }) => {
     const Drawline = () => {
         return (
             <View style={{ width: '100%', height: 1, backgroundColor: COLORS.textBgcolor, marginVertical: 12 }} />
-
         );
     }
     const orderPaymentStatus = () => {
 
         return orderDetail['paymentStatus'] && (
             <>
-
                 <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
                     <View style={{ width: '49%' }}>
                         <Text style={[GlobalStyle.subtitleText, {}]}>Payment Method</Text>
@@ -171,7 +161,7 @@ const OrderDetails = ({ route }) => {
             const email = shippAddress['email'].toLowerCase();
             const address = `${shippAddress['address1']} ${shippAddress['address2']}`
 
-            return shippAddress && <View style={[GlobalStyle.card, { marginTop: 0 }]}>
+            return shippAddress && <View style={[GlobalStyle.card, { marginTop: 0, marginLeft: 10, marginRight: 10, marginBottom: 10 }]}>
                 <Text style={[GlobalStyle.titleText, { color: COLORS.titleColor, marginVertical: 5 }]}>{`Shipping Address`}</Text>
                 <Drawline />
                 <Text style={[GlobalStyle.lightText, { width: '100%', textAlign: 'left', }]}>{`Name: ${shippAddress['name']}`}</Text>
@@ -200,11 +190,8 @@ const OrderDetails = ({ route }) => {
                 <Text style={[GlobalStyle.lightText, { textAlign: 'left', alignSelf: 'flex-start' }]}>{`State:- ${shippAddress['state']}`}</Text>
                 <Drawline />
                 <Text style={[GlobalStyle.lightText, { textAlign: 'left', alignSelf: 'flex-start' }]}>{`Country:- ${shippAddress['country']}`}</Text>
-
-
             </View>
         }
-
     }
     const renderBillingAddress = () => {
 
@@ -213,7 +200,7 @@ const OrderDetails = ({ route }) => {
             const email = billingAddress['email'].toLowerCase();
             const address = `${billingAddress['address1']} ${billingAddress['address2']}`
 
-            return billingAddress && <View style={[GlobalStyle.card, { marginTop: 0 }]}>
+            return billingAddress && <View style={[GlobalStyle.card, { marginTop: 0, marginLeft: 10, marginRight: 10, marginBottom: 10 }]}>
                 <Text style={[GlobalStyle.titleText, { color: COLORS.titleColor, marginVertical: 5 }]}>{`Billing Address`}</Text>
                 <Drawline />
                 <Text style={[GlobalStyle.lightText, { width: '100%', textAlign: 'left', }]}>{`Name: ${billingAddress['name']}`}</Text>
@@ -242,14 +229,12 @@ const OrderDetails = ({ route }) => {
                 <Text style={[GlobalStyle.lightText, { textAlign: 'left', alignSelf: 'flex-start' }]}>{`State:- ${billingAddress['state']}`}</Text>
                 <Drawline />
                 <Text style={[GlobalStyle.lightText, { textAlign: 'left', alignSelf: 'flex-start' }]}>{`Country:- ${billingAddress['country']}`}</Text>
-
-
             </View>
         }
     }
     const renderPaymentInfo = () => {
         return (
-            <View style={[GlobalStyle.card, { marginTop: 0 }]}>
+            <View style={[GlobalStyle.card, { marginTop: 0, marginLeft: 10, marginRight: 10, marginBottom: 10 }]}>
 
                 <Text style={[GlobalStyle.titleText, { color: COLORS.titleColor, marginVertical: 5 }]}>{`Payment`}</Text>
                 <Drawline />
@@ -321,15 +306,12 @@ const OrderDetails = ({ route }) => {
 
     //f5894b5921a1a036321e5102b7df1f5d
     //Kiran#130303$
-
     const renderCartItem = () => {
         return cartItem && (
-            <View style={[GlobalStyle.card, { marginTop: 0 }]}>
+            <View style={[GlobalStyle.card, { marginTop: 0, marginLeft: 10, marginRight: 10, marginBottom: 10 }]}>
                 <Text style={[GlobalStyle.titleText, { color: COLORS.titleColor, marginTop: 5, marginBottom: 15 }]}>{`Cart Item(${orderDetail['totalItems']})`}</Text>
                 {
                     cartItem.map((item, index) =>
-
-
                         <View key={index} style={{ flexDirection: 'row', width: '100%', borderWidth: 1, borderColor: COLORS.textBgcolor, borderRadius: 4, padding: 5, marginVertical: 5 }}>
                             <View style={{ width: 80, height: 80, backgroundColor: COLORS.textBgcolor }}>
                                 {
@@ -337,7 +319,7 @@ const OrderDetails = ({ route }) => {
                                 }
                             </View>
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.nameText}>{item['productName']}</Text>
+                                <Text style={GlobalStyle.nameText}>{item['productName']}</Text>
                                 {
                                     item['attributeOptionValue'] && <Text style={styles.colorText}>{`${item['attributeOptionValue']}`}</Text>
                                 }
@@ -369,7 +351,7 @@ const OrderDetails = ({ route }) => {
                     <ScrollView>
                         {
                             orderDetail && <>
-                                <View style={[GlobalStyle.card]}>
+                                <View style={[GlobalStyle.card, { margin: 10 }]}>
                                     <Text style={[GlobalStyle.titleText, { color: COLORS.titleColor, marginVertical: 5 }]}>{`Order Detail`}</Text>
                                     <Drawline />
                                     <View style={{ flexDirection: 'row' }}>
@@ -386,7 +368,7 @@ const OrderDetails = ({ route }) => {
                                         orderDetail['orderNotes'] && <Text style={[GlobalStyle.lightText, { fontSize: 13, textAlign: 'left', alignSelf: 'flex-start', marginTop: 5 }]}>{`Notes:- ${orderDetail['orderNotes']}`}</Text>
                                     }
                                 </View>
-                                <View style={[GlobalStyle.card, { marginTop: 0 }]}>
+                                <View style={[GlobalStyle.card, { marginLeft: 10, marginRight: 10, marginTop: 0, marginBottom: 10 }]}>
                                     <Text style={[GlobalStyle.titleText, { color: COLORS.titleColor, marginVertical: 5 }]}>{`Store Detail`}</Text>
                                     <Drawline />
                                     <Text style={[styles.subtitleText, { width: '100%', textAlign: 'left', }]}>{`Name: ${orderDetail['storeName']}`}</Text>
@@ -396,15 +378,10 @@ const OrderDetails = ({ route }) => {
                                     <Text style={[styles.subtitleText, { width: '100%', textAlign: 'left', }]}>{`customer Id: ${orderDetail['customerId']}`}</Text>
 
                                 </View>
-                                {
-
-                                }
                                 {renderShippingAddress()}
                                 {renderBillingAddress()}
                                 {renderCartItem()}
                                 {renderPaymentInfo()}
-
-
                             </>
                         }
                     </ScrollView>
@@ -420,7 +397,6 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#fff'
     },
     subtitleText: {
         fontFamily: Font.RalewaySemiBold,
@@ -441,15 +417,6 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         textAlign: 'left',
         textTransform: 'capitalize',
-    },
-    nameText: {
-        color: COLORS.titleColor,
-        opacity: 0.9,
-        letterSpacing: 1.2,
-        fontSize: 14,
-        padding: 5,
-        textTransform: 'capitalize',
-        fontFamily: Font.RalewayBold,
     },
     statusText: (status) => (
         {

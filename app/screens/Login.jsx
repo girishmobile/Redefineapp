@@ -54,7 +54,6 @@ const Login = ({ route }) => {
             }
         }
     }
-
     const getIPAddressAndMacAddress = async () => {
 
         getIpAddress().then((ip) => {
@@ -78,7 +77,7 @@ const Login = ({ route }) => {
     const handleSubmit = async (user) => {
         //setIsOpenVerify(true);
         setIsErrorMsg('');
-        user = { email: 'girish@redefinesolutions.com', password: 'girish@123$', Islogin: true, verifycode: '', Isbiometric: '', verifystatus: false, token: '', userId: '' };
+        user = { email: 'girish@redefinesolutions.com', password: 'admin@123', Islogin: true, verifycode: '', Isbiometric: '', verifystatus: false, token: '', userId: '' };
         const me = {
             email: user.email,
             password: user.password,
@@ -226,7 +225,7 @@ const Login = ({ route }) => {
                 // validationSchema={validationSchema}
                 >
                     <AppFormField
-                        icon='ios-mail-outline'
+                        icon='mail-outline'
                         autoCapitalize="none"
                         autoCorrect={false}
                         placeholder='Email'
@@ -235,7 +234,7 @@ const Login = ({ route }) => {
                         textContentType="emailAddress"
                     />
                     <AppFormField
-                        icon="ios-lock-closed-outline"
+                        icon="lock-closed-outline"
                         autoCapitalize="none"
                         autoCorrect={false}
                         placeholder='Password'
@@ -262,7 +261,7 @@ const Login = ({ route }) => {
         return (
             <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%' }}>
                 <Applogo />
-                <Icon style={{ marginVertical: 10 }} name={'ios-shield-checkmark-outline'} color={COLORS.secondary} size={41} type={Icons.Ionicons} />
+                <Icon style={{ marginVertical: 10 }} name={'shield-checkmark-outline'} color={COLORS.secondary} size={41} type={Icons.Ionicons} />
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', }}>
                     <Text style={[styles.text,]}>{`Do you want to allow Redefine Solutions App to use biometrics. like (FaceId or TouchID) authentication ?`}</Text>
                 </View>
